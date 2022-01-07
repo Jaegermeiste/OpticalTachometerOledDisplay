@@ -154,7 +154,21 @@ void loop() {
   
   if (current_millis - previous_millis >= DISPLAY_UPDATE_INTERVAL) {
     previous_millis = current_millis;
-    updateDisplay();
+
+    long rpm = calculateRpm();
+    long ema_rpm = emaRpm(rpm);
+  
+    // Update the max tick as appropriate
+    if (ema_rpm > observed_max_rpm) {
+      observed_max_rpm = ema_rpm;
+    }
+  
+    // Scale up if we go off the chart
+    if (ema_rpm > dial_max_rpm) {
+      recalculateTicks(ema_rpm);
+    }
+    
+    updateDisplay(ema_rpm);
   }
 }
 
@@ -222,10 +236,7 @@ void incrementRevolution() {
   revolutions++;
 }
 
-void updateDisplay() {
-  long rpm = calculateRpm();
-  long ema_rpm = emaRpm(rpm);
-  
+void updateDisplay(long rpm) {
   if (rpm > 0) {
     last_sensor_time = millis();
     if (!is_oled_display_on || is_oled_display_dim) {
@@ -234,8 +245,8 @@ void updateDisplay() {
   }
   if (is_oled_display_on) {
     display.clearDisplay();
-    drawRpmBanner(ema_rpm);
-    drawDial(ema_rpm);
+    drawRpmBanner(rpm);
+    drawDial(rpm);
     display.display();
   }
 }
