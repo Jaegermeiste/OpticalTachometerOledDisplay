@@ -16,6 +16,8 @@ https://learn.adafruit.com/arduino-tips-tricks-and-techniques/arduino-libraries
 ## Authors
 
 * **Troy Barbour** - *Initial work* - [tmbarbour](https://github.com/tmbarbour)
+* impexeris - display startup delay (https://github.com/impexeris/OpticalTachometerOledDisplay/)
+* Jaegermeiste - added autoscaling of dial, max observed RPM tick, hysteresis avoidance and smoothing (EMA + threshold) for RPM signal
 
 ## License
 

@@ -93,6 +93,7 @@ namespace {
 void setup() {
   Serial.begin(9600);
 
+  // https://github.com/impexeris/OpticalTachometerOledDisplay/blob/master/OpticalTachometerOledDisplay.ino
   delay (MILLIS_PER_SECOND/3); //initial delay to avoid display flickering due to power-on noises
   
   initOledDisplayWithI2CAddress(0x3C);
