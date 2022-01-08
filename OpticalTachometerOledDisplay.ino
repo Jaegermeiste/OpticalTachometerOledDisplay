@@ -42,18 +42,20 @@ namespace {
   const uint16_t LABEL_RADIUS = DIAL_RADIUS - 18;
   const int DIAL_LABEL_Y_OFFSET = 6;
   const int DIAL_LABEL_X_OFFSET = 4;
-  
-  long major_ticks[] = { 0, 2000, 4000, 6000 }; // Max is evenly divisible by 3
+
+  const long MAX_RPM_GROWTH = 3000; // Ensure all increases are divisible by 3
+  const long INITIAL_DIAL_MAX = 6000; // Max is evenly divisible by 3 and 6
+  long dial_max_rpm = INITIAL_DIAL_MAX;
+
+  // There are 3x major and 3x minor ticks, not counting major tick 0. So divide the initial dial max into 6ths
+  long major_ticks[] = { 0, (long)((2.0/6.0)* (double)INITIAL_DIAL_MAX), (long)((4.0/6.0)* (double)INITIAL_DIAL_MAX), /*(6.0/6.0)*/INITIAL_DIAL_MAX };
   const int MAJOR_TICK_COUNT = sizeof(major_ticks) / sizeof(major_ticks[0]);
   const int  MAJOR_TICK_LENGTH = 7;
-  long minor_ticks[] = {1000, 3000, 5000};
+  long minor_ticks[] = {(long)((1.0/6.0)* (double)INITIAL_DIAL_MAX), (long)((3.0/6.0)* (double)INITIAL_DIAL_MAX), (long)((5.0/6.0)* (double)INITIAL_DIAL_MAX)};
   const int MINOR_TICK_COUNT = sizeof(minor_ticks) / sizeof(minor_ticks[0]);
   const int MINOR_TICK_LENGTH = 3;
-  
-  uint16_t dial_max_rpm = major_ticks[MAJOR_TICK_COUNT-1];
-  const uint16_t MAX_RPM_GROWTH = 3000; // Ensure all increases are divisible by 3
-  const int OBSERVED_MAX_RPM_TICK_LENGTH = -2;
 
+  const int OBSERVED_MAX_RPM_TICK_LENGTH = -2;
   long observed_max_rpm = 0;
   
   const int HALF_CIRCLE_DEGREES = 180;
@@ -100,6 +102,7 @@ void setup() {
   display.setTextColor(WHITE);
   initArrays();
   emaSetup();
+  recalculateTicks(6000);
   
   turnOnIrLED();
   attachPhotodiodeToInterrruptZero();
@@ -112,14 +115,14 @@ void initArrays() {
   memset(interval_millis,0,sizeof(interval_millis));
 }
 
-void recalculateTicks(int max_rpm) {
+void recalculateTicks(long max_rpm) {
   // Increase the max
   while (max_rpm > dial_max_rpm) {
     dial_max_rpm += MAX_RPM_GROWTH;
   }
 
   // Calculate dial spacing
-  int dial_major_interval = dial_max_rpm / (MAJOR_TICK_COUNT - 1);
+  long dial_major_interval = dial_max_rpm / (MAJOR_TICK_COUNT - 1);
 
   // Update major ticks
   for (int i = 0; i < MAJOR_TICK_COUNT; i++)
@@ -141,7 +144,7 @@ void recalculateTicks(int max_rpm) {
   // Update minor ticks
   for (int i = 0; i < MINOR_TICK_COUNT; i++)
   {
-    minor_ticks[i] = floor((dial_major_interval / 2) * (i + 1));  
+    minor_ticks[i] = floor((dial_major_interval / 2) * ((2 * i) + 1));  
   }
 }
 
