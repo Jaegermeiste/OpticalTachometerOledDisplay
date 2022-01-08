@@ -35,7 +35,7 @@ namespace {
   const int INTERRUPT_ZERO_ON_PIN_2 = 0;
   
   const uint16_t DIAL_CENTER_X = OLED_WIDTH / 2;
-  const uint16_t DIAL_RADIUS = (OLED_HEIGHT - YELLOW_SEGMENT_HEIGHT) - 1;
+  const uint16_t DIAL_RADIUS = (OLED_HEIGHT - YELLOW_SEGMENT_HEIGHT) - 3;
   const uint16_t DIAL_CENTER_Y = OLED_HEIGHT - 1;
   const uint16_t INDICATOR_LENGTH = DIAL_RADIUS - 5;
   const uint16_t INDICATOR_WIDTH = 5;
@@ -79,7 +79,7 @@ namespace {
   bool is_oled_display_on = false;
   bool is_oled_display_dim = false;
 
-  const int EMA_PERIOD = 9;
+  const double EMA_PERIOD = 1.75;
   const int EMA_THRESHOLD = 1;  // Only consider changes of EMA_THRESHOLD as valid to avoid fractional noise
   double denom_ema = 0.0;
   double alpha = 0.0;
