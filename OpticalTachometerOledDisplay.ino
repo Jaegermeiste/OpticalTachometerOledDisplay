@@ -87,7 +87,7 @@ namespace {
 #ifdef OLED_TYPE_SH1106
    Adafruit_SH1106 display(OLED_RESET);
 #else
-   Adafruit_SSD1306 display(OLED_RESET);
+   Adafruit_SSD1306 display(OLED_WIDTH, OLED_HEIGHT);
 #endif
 
 void setup() {
